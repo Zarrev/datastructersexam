@@ -29,7 +29,7 @@ private:
 	int change = 0;
 	char noise = '#';
 	std::vector<std::pair<int,int> > invTrans;
-	std::vector< std::pair<char, std::string > > huffcode;
+	std::vector< std::pair<int, std::string > > huffcode;
 
 	void stayNoiseChar(int a, Matrix<int> &myMatrix)
 	{
@@ -45,11 +45,9 @@ private:
 		}
 	}
 
-	/// int matrixot kell atadni es a noise-t intkent kell kezelni
 	void noisyChannel(Matrix<int> &myMatrix)
 	{
 		double percent = 0.25;
-		std::string emp;
 
 		int changePiece = myMessage.length() * percent;
 
@@ -59,14 +57,11 @@ private:
 			int i = rand() % myMatrix.size();
 			int j = rand() % myMatrix[i].size();
 
-			emp.push_back(myMatrix[i][j]);
-
-			if ((myMatrix[i][j] != int(noise)) and (emp != myMatrix.getEmpty()))
+			if ((myMatrix[i][j] != int(noise)) and (myMatrix[i][j] != myMatrix.getEmptyChar()))
 			{
 				myMatrix[i][j] = int(noise);
 				changePiece--;
 			}
-			emp.clear();
 		}
 	}
 
@@ -120,36 +115,29 @@ private:
 				case 1 :
 					stayNoiseChar(int(noise * invTrans[i-1].second),myMatrix);
 					myMatrix.dealingSkTrans(invTrans[i-1].second);
-					myMatrix.print();
 					break;
 				case 2 :
 					stayNoiseChar(int(noise - invTrans[i-1].second),myMatrix);
 					myMatrix.plusTrans(invTrans[i-1].second);
-					myMatrix.print();
 					break;
 				case 3 :
 					stayNoiseChar(int(noise - invTrans[i-1].second),myMatrix);
 					myMatrix.plusSkTrans(invTrans[i-1].second);
-					myMatrix.print();
 					break;
 				case 4 :
 					stayNoiseChar(int(noise + invTrans[i-1].second),myMatrix);
 					myMatrix.minusTrans(invTrans[i-1].second);
-					myMatrix.print();
 					break;
 				case 5 :
 					stayNoiseChar(int(noise + invTrans[i-1].second),myMatrix);
 					myMatrix.minusSkTrans(invTrans[i-1].second);
-					myMatrix.print();
 					break;
 				case 6 :
 					stayNoiseChar(int(noise / invTrans[i-1].second),myMatrix);
 					myMatrix.multiSkTrans(invTrans[i-1].second);
-					myMatrix.print();
 					break;
 				case 7 :
 					myMatrix.transposeTrans();
-					myMatrix.print();
 					break;
 			}
 		}
@@ -232,8 +220,7 @@ private:
 		}
 	}
 
-	///int matrix kell ide is..
-	Matrix<std::string> compression(Matrix<char> myMatrix)
+	Matrix<std::string> compression(Matrix<int> myMatrix)
 	{
 		Matrix<std::string> tmp;
 		for (size_t i = 0; i < myMatrix.size(); i++)
@@ -262,11 +249,6 @@ private:
 			std::vector<char> temp;
 			for (size_t j = 0; j < myMatrix[i].size(); j++)
 			{
-
-				char c = char(myMatrix[i][j]);
-				//itt a hiba hol a hiba :D
-				std::cout <<int(c) << ":";
-				std::cout << c << std::endl;
 				temp.push_back(char(myMatrix[i][j]));
 			}
 			tmp.push_back(temp);
@@ -313,13 +295,11 @@ private:
 			std::vector<int> temp;
 			for (size_t j = 0; j < myMatrix[i].size(); j++)
 			{
-				//std::cout << int(myMessage[k]) << " ";
 				temp.push_back(myMessage[k]);
 				k++;
 			}
 			tmp.push_back(temp);
 		}
-		std::cout << std::endl;
 		tmp.setEmptyChar(myMatrix.getEmptyChar());
 		myMatrix = tmp;
 	}
@@ -339,35 +319,24 @@ public:
 		myComMx.setEmptyChar(myMatrix.getEmptyChar());
 
 		myMx = convToChar(myMatrix);
-		/*
-		for (size_t i = 0; i < myMx.size(); i++)
-					for (size_t j = 0; j < myMx.size(); j++)
-						std::cout << int(myMx[i][j]) << std::endl;
-		*/
 		myMessage = toString(myMx);
 		print();
-
 
 		noisyChannel(myMatrix);
 		myMx = convToChar(myMatrix);
 		myMessage = toString(myMx);
 		print();
 
-		/// myMatrixot (inteset) kell atadni
 		tree.makeCode(myMatrix);
-
 		huffcode = tree.getMyCode();
-		/// myMatrixot kell atadni neki
-		myComMx = compression(myMx);
-
+		myComMx = compression(myMatrix);
+		myComMx.setEmptyChar(myMx.getEmptyChar());
 		myMessage = toString(myComMx);
 		print();
 
-		std::vector<int> myTmpVec;
-		myMessage = tree.deCode(myMessage, myTmpVec);
+		myMessage = tree.deCode(myMessage, myMatrix);
 		print();
-		///itt jartam
-		intMatrixRecycling(myMatrix);
+
 		inverseTrans(myMatrix);
 		myMx = convToChar(myMatrix);
 		myMx.setEmptyChar(myMatrix.getEmptyChar());

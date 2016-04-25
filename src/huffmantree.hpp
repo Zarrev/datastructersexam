@@ -9,6 +9,7 @@
 #include <utility>
 #include <queue>
 #include <string>
+#include <cmath>
 
 #include "matrixClass.hpp"
 
@@ -231,7 +232,7 @@ public:
 		return this->myCode;
 	}
 
-	std::string deCode(std::string myString, std::vector<int> &myASCIIs)
+	std::string deCode(std::string myString, Matrix<int> &myMatrix)
 	{
 		std::string realMes;
 		std::string tmp = "";
@@ -242,15 +243,52 @@ public:
 
 			for (size_t j = 0; j < myCode.size(); j++)
 			{
-				if (tmp == myCode[j].second)
+				if (tmp == myCode[j].second and myMatrix.getEmptyChar() != myCode[j].first)
 				{
-					realMes.push_back(char(myCode[j].first));
-					myASCIIs.push_back(myCode[j].first);
+						realMes.push_back(char(myCode[j].first));
+						tmp = "";
+						break;
+				}
+				if (tmp == myCode[j].second and myMatrix.getEmptyChar() == myCode[j].first)
+				{
 					tmp = "";
 					break;
 				}
 			}
 		}
+
+		tmp = "";
+		std::vector<int> helpInt;
+		for (size_t i = 0; i < myString.length(); i++)
+		{
+			tmp += myString[i];
+
+			for (size_t j = 0; j < myCode.size(); j++)
+			{
+				if (tmp == myCode[j].second)
+				{
+					helpInt.push_back(myCode[j].first);
+					tmp = "";
+					break;
+				}
+			}
+		}
+
+		myMatrix.clear();
+		size_t size = sqrt(helpInt.size());
+		int j = 0;
+
+		for(size_t i = 0; i < size; i++)
+		{
+			std::vector<int> help;
+			for(size_t k = 0; k < size; k++)
+			{
+				help.push_back(helpInt[j]);
+				j++;
+			}
+			myMatrix.push_back(help);
+		}
+
 		return realMes;
 	}
 

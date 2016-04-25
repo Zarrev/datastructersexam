@@ -136,7 +136,7 @@ public:
 
 	int getEmptyChar() const
 	{
-		return this->emptyChar;
+		return emptyChar;
 	}
 
 	void setEmptyChar(int e)
@@ -145,8 +145,9 @@ public:
 		this->emptyC = char(e);
 	}
 
-	std::string getEmpty() const
+	std::string getEmpty()
 	{
+		emptyC = char(emptyChar);
 		std::string tmp;
 		std::stringstream ss;
 
