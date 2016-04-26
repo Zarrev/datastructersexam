@@ -45,23 +45,82 @@ private:
 		}
 	}
 
+	void swapEff(int &a, int &b)
+	{
+		a = a + b;
+		b = a - b;
+		a = a - b;
+	}
+
 	void noisyChannel(Matrix<int> &myMatrix)
 	{
-		double percent = 0.25;
 
+		double percent = 0.25;
+		std::cout << "Please enter the amount of noise in percentage form: ";
+		std::cin >> percent;
+		std::cout << std::endl;
+		if (percent > 1)
+			percent /= 100;
+		srand(time(0));
 		int changePiece = myMessage.length() * percent;
+
+		std::vector<int> myVecI;
+		std::vector<int> myVecJ;
+
+		bool boolean = true;
+
+		for (int go = 0; go < changePiece*2; go++)
+		{
+			boolean = true;
+			int randI = rand() % myMatrix.size();
+			int randJ = rand() % myMatrix.size();
+
+			while (boolean)
+			{
+				boolean = false;
+				if (myMatrix[randI][randJ] == myMatrix.getEmptyChar())
+				{
+					randI = rand() % myMatrix.size();
+					randJ = rand() % myMatrix.size();
+
+					for (size_t i = 0; i < myVecI.size(); i++)
+					{
+						if (randI == myVecI[i] and randJ == myVecJ[i])
+						{
+							randI = rand() % myMatrix.size();
+							randJ = rand() % myMatrix.size();
+						}
+					}
+
+					boolean = true;
+				}
+				else
+				{
+					myVecI.push_back(randI);
+					myVecJ.push_back(randJ);
+				}
+			}
+		}
+
 
 		while (changePiece > 0)
 		{
-			srand(time(0));
-			int i = rand() % myMatrix.size();
-			int j = rand() % myMatrix[i].size();
-
-			if ((myMatrix[i][j] != int(noise)) and (myMatrix[i][j] != myMatrix.getEmptyChar()))
+			int which = rand() % 2;
+			if (which == 0)
 			{
-				myMatrix[i][j] = int(noise);
-				changePiece--;
+				myMatrix[myVecI[myVecI.size()-1]][myVecJ[myVecJ.size()-1]] = int(noise);
+				myVecI.pop_back();
+				myVecJ.pop_back();
 			}
+			else
+			{
+				swapEff(myMatrix[myVecI[myVecI.size()-1]][myVecJ[myVecJ.size()-1]],myMatrix[myVecI[myVecI.size()-2]][myVecJ[myVecJ.size()-2]]);
+				myVecI.pop_back();
+				myVecJ.pop_back();
+				myVecI.pop_back();
+				myVecJ.pop_back();
+			}
+			changePiece--;
 		}
 	}
 
