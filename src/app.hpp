@@ -15,6 +15,7 @@
 #include "matrixConsol.hpp"
 #include "matrixFile.hpp"
 #include "huffmantree.hpp"
+#include "predict.hpp"
 
 #ifndef APP_HPP_
 #define APP_HPP_
@@ -230,6 +231,11 @@ private:
 			{
 				case 1 :
 					setChange();
+					if (change == 0)
+					{
+						std::cout << "The number can not be zero!" << std::endl;
+						change = 1;
+					}
 					myMatrix.multiSkTrans(change);
 					invTrans.push_back(std::pair<int,int> (1,change));
 					break;
@@ -255,6 +261,11 @@ private:
 					break;
 				case 6 :
 					setChange();
+					if (change == 0)
+					{
+						std::cout << "The number can not be zero!" << std::endl;
+						change = 1;
+					}
 					myMatrix.dealingSkTrans(change);
 					invTrans.push_back(std::pair<int,int> (6,change));
 					break;
@@ -342,25 +353,9 @@ private:
 
 	void print()
 	{
-		std::cout << "Current status of message: " << myMessage << std::endl << std::endl;
-	}
-
-	void intMatrixRecycling(Matrix<int> &myMatrix)
-	{
-		Matrix<int> tmp;
-		int k = 0;
-		for (size_t i = 0; i < myMatrix.size(); i++)
-		{
-			std::vector<int> temp;
-			for (size_t j = 0; j < myMatrix[i].size(); j++)
-			{
-				temp.push_back(myMessage[k]);
-				k++;
-			}
-			tmp.push_back(temp);
-		}
-		tmp.setEmptyChar(myMatrix.getEmptyChar());
-		myMatrix = tmp;
+		static int stat = 1;
+		std::cout << stat << ". status of message: " << myMessage << std::endl << std::endl;
+		stat++;
 	}
 
 public:
@@ -400,6 +395,9 @@ public:
 		myMx = convToChar(myMatrix);
 		myMx.setEmptyChar(myMatrix.getEmptyChar());
 		myMessage = toString(myMx);
+		print();
+
+		predictMessage2(myMessage);//,noise);
 		print();
 	}
 

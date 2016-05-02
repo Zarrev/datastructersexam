@@ -29,6 +29,7 @@ void makeASCIIfile(std::string text, Matrix<int> &myMatrix)
 
 		myText += (temp + " ");
 	}
+	myFile.close();
 	size_t plusSpace = 1;
 	myText = myText.substr(0,myText.length()-plusSpace);
 
