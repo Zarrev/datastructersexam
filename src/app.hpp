@@ -377,7 +377,6 @@ private:
 					}
 					ss.clear();
 					tmp.clear();
-
 			}
 		}
 		return temp;

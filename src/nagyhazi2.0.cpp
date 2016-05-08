@@ -13,7 +13,7 @@ int main() {
 
 	app Application;
 	Application.runCode();
-	//system("pause");
+	//system("pause");			Debug.exe-hez hasznaltam, mert a windows alapertelmezett consolt jobban atlattam.
 
 	return 0;
 }

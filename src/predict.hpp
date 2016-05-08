@@ -15,6 +15,14 @@
 #include <utility>
 #include <algorithm>
 
+void test(std::vector<std::pair<std::string,std::string> > myWords)
+{
+	for (size_t i = 0; i < myWords.size(); i++)
+	{
+		std::cout << myWords[i].first << ":" << myWords[i].second << std::endl;
+	}
+}
+
 void predictMessage(std::string &message, char noise, bool quickTest)
 {
 	std::string predMes;
@@ -31,6 +39,13 @@ void predictMessage(std::string &message, char noise, bool quickTest)
 	}
 	std::cout << std::endl;
 	std::fstream file(filename.c_str());
+
+	if (!file.good())
+	{
+		std::cerr << "Wrong input file name!" << std::endl;
+		exit(1);
+	}
+
 	while(file.good())
 	{
 		std::string temp;
@@ -181,7 +196,6 @@ void predictMessage(std::string &message, char noise, bool quickTest)
 	}
 	for (size_t i = 0; i < myWords.size(); i++)
 	{
-		std::cout << myWords[i].first << ":" << myWords[i].second << std::endl;
 		if (i != myWords.size()-1)
 			predMes += myWords[i].second + " ";
 		else
