@@ -27,6 +27,7 @@ private:
 
 	std::string myMessage;
 	huffman_tree tree;
+	bool quickTest = false;
 	int change = 0;
 	char noise = '#';
 	std::vector<std::pair<int,int> > invTrans;
@@ -57,8 +58,13 @@ private:
 	{
 
 		double percent = 0.25;
-		std::cout << "Please enter the amount of noise in percentage form: ";
-		std::cin >> percent;
+		if (!quickTest){
+			std::cout << "Please enter the amount of noise in percentage form: ";
+			std::cin >> percent;
+		}
+		else{
+			std::cout << "The amount of noise in percentage form is 25%." << std::endl;
+		}
 		std::cout << std::endl;
 		if (percent > 1)
 			percent /= 100;
@@ -135,11 +141,12 @@ private:
 	{
 		std::string answ = "0";
 
-		while (answ != "1" and answ != "2")
+		while (answ != "1" and answ != "2" and answ != "3")
 		{
 			std::cout << "Get a text which will be used!" <<std::endl
 					<< "1 - consol input" << std::endl
 					<< "2 - file scan" << std::endl
+					<< "3 - quick test" << std::endl
 					<< "0 - exit" << std::endl
 					<< "Choose one: ";
 			std::cin >> answ;
@@ -155,6 +162,13 @@ private:
 			{
 				std::cout << std::endl << "The program is finished!";
 				exit(EXIT_SUCCESS);
+			}
+			else if (answ == "3")
+			{
+				quickTest = true;
+				makeASCIIfile("input.txt",myMatrix);
+				myMatrix.makeNxNmatrix();
+				myMatrix.print();
 			}
 			else
 			{
@@ -221,7 +235,7 @@ private:
 				  << "9 - print matrix (char)" << std::endl
 				  << "0 - continue" << std::endl;
 
-		while (tmp)
+		while (tmp and !quickTest)
 		{
 			std::cout << std::endl;
 			std::cout << "Choose one matrix transformation or print or continue: ";
@@ -287,6 +301,24 @@ private:
 				default:
 					std::cout << "Wrong input! Try it again!" << std::endl;
 			}
+		}
+		if (quickTest)
+		{
+			change = 2;
+			std::cout << std::endl << "Scalar multiplication by " << change << "." << std::endl;
+			myMatrix.multiSkTrans(change);
+			invTrans.push_back(std::pair<int,int> (1,change));
+			myMatrix.print();
+
+			std::cout << std::endl << "Transposed." << std::endl;
+			myMatrix.transposeTrans();
+			invTrans.push_back(std::pair<int,int> (7,0));
+			myMatrix.print();
+
+			std::cout << std::endl << "Summation (scalar) by " << change << "." << std::endl;
+			myMatrix.plusSkTrans(change);
+			invTrans.push_back(std::pair<int,int> (5,change));
+			myMatrix.print();
 		}
 	}
 
@@ -397,7 +429,7 @@ public:
 		myMessage = toString(myMx);
 		print();
 
-		predictMessage2(myMessage);//,noise);
+		predictMessage(myMessage,noise,quickTest);
 		print();
 	}
 
